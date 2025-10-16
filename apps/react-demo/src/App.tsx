@@ -1,15 +1,16 @@
-import React, { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { MobileVideoPlayer } from '@mobile-canvas-video-player/react'
+import type { MobileVideoPlayerRef } from '@mobile-canvas-video-player/react'
 import '@mobile-canvas-video-player/react/style.css'
 import './App.css'
 
 function App() {
-  const playerRef = useRef(null)
+  const playerRef = useRef<MobileVideoPlayerRef>(null)
   const [videoSrc] = useState('https://test-streams.mux.dev/x36xhzz/url_6/193039199_mp4_h264_aac_hq_7.m3u8')
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60)
     const secs = Math.floor(seconds % 60)
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
@@ -25,7 +26,7 @@ function App() {
     console.log('视频暂停')
   }
 
-  const onTimeUpdate = (time) => {
+  const onTimeUpdate = (time: number) => {
     setCurrentTime(time)
   }
 
@@ -33,7 +34,7 @@ function App() {
     console.log('视频播放结束')
   }
 
-  const onError = (error) => {
+  const onError = (error: any) => {
     console.error('视频播放错误:', error)
   }
 
@@ -66,7 +67,7 @@ function App() {
     <div className="demo-container">
       <div className="demo-header">
         <h1>Mobile Video Player</h1>
-        <p>React + Vite + Canvas</p>
+        <p>React + Vite + Canvas + TypeScript</p>
       </div>
 
       <div className="demo-player">
@@ -98,6 +99,7 @@ function App() {
           <li>✅ 进度条拖拽</li>
           <li>✅ 音量控制</li>
           <li>✅ 响应式设计</li>
+          <li>✅ TypeScript 类型支持</li>
         </ul>
 
         <h3 style={{ marginTop: '20px' }}>当前状态：</h3>

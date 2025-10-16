@@ -1,7 +1,45 @@
 import Hls from 'hls.js'
 
+export interface VideoPlayerOptions {
+  loop?: boolean
+  preload?: 'auto' | 'metadata' | 'none'
+}
+
+export interface VideoPlayerState {
+  isPlaying: boolean
+  isMuted: boolean
+  isFullscreen: boolean
+  isLoading: boolean
+  currentTime: number
+  duration: number
+  buffered: number
+  volume: number
+}
+
+export type VideoPlayerEvent = 
+  | 'loadstart'
+  | 'loadedmetadata'
+  | 'canplay'
+  | 'play'
+  | 'pause'
+  | 'timeupdate'
+  | 'progress'
+  | 'volumechange'
+  | 'ended'
+  | 'error'
+
+export type EventCallback<T = any> = (data?: T) => void
+
 export class VideoPlayer {
-  constructor(options = {}) {
+  public options: Required<VideoPlayerOptions>
+  public state: VideoPlayerState
+  private callbacks: Record<string, EventCallback[]>
+  private hls: Hls | null
+  private video: HTMLVideoElement | null
+  private canvas: HTMLCanvasElement | null
+  private ctx: CanvasRenderingContext2D | null
+
+  constructor(options: VideoPlayerOptions = {}) {
     this.options = {
       loop: false,
       preload: 'auto',
@@ -26,7 +64,7 @@ export class VideoPlayer {
     this.ctx = null
   }
 
-  init(canvasElement, src) {
+  public init(canvasElement: HTMLCanvasElement, src: string): void {
     this.video = document.createElement("video")
     this.canvas = canvasElement
     this.ctx = canvasElement.getContext('2d')
@@ -37,7 +75,9 @@ export class VideoPlayer {
     this.startRenderLoop()
   }
 
-  setupVideoElement() {
+  private setupVideoElement(): void {
+    if (!this.video) return
+    
     this.video.muted = true
     this.video.loop = this.options.loop
     this.video.preload = this.options.preload
@@ -45,10 +85,14 @@ export class VideoPlayer {
     this.video.setAttribute('webkit-playsinline', '')
   }
 
-  setupEventListeners() {
+  private setupEventListeners(): void {
+    if (!this.video) return
+    
     this.video.addEventListener('loadstart', () => this.emit('loadstart'))
     this.video.addEventListener('loadedmetadata', () => {
-      this.state.duration = this.video.duration
+      if (this.video) {
+        this.state.duration = this.video.duration
+      }
       this.emit('loadedmetadata')
     })
     this.video.addEventListener('canplay', () => this.emit('canplay'))
@@ -61,28 +105,32 @@ export class VideoPlayer {
       this.emit('pause')
     })
     this.video.addEventListener('timeupdate', () => {
-      this.state.currentTime = this.video.currentTime
+      if (this.video) {
+        this.state.currentTime = this.video.currentTime
+      }
       this.emit('timeupdate')
     })
     this.video.addEventListener('progress', () => {
-      if (this.video.buffered.length > 0) {
+      if (this.video && this.video.buffered.length > 0) {
         this.state.buffered = this.video.buffered.end(this.video.buffered.length - 1)
       }
       this.emit('progress')
     })
     this.video.addEventListener('volumechange', () => {
-      this.state.volume = this.video.volume
-      this.state.isMuted = this.video.muted
+      if (this.video) {
+        this.state.volume = this.video.volume
+        this.state.isMuted = this.video.muted
+      }
       this.emit('volumechange')
     })
     this.video.addEventListener('ended', () => this.emit('ended'))
     this.video.addEventListener('error', (e) => this.emit('error', e))
   }
 
-  startRenderLoop() {
-    const render = () => {
+  private startRenderLoop(): void {
+    const render = (): void => {
       if (this.video && this.canvas && this.ctx) {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height)
       }
       requestAnimationFrame(render)
@@ -90,7 +138,9 @@ export class VideoPlayer {
     render()
   }
 
-  loadSource(src) {
+  public loadSource(src: string): void {
+    if (!this.video) return
+    
     if (src.endsWith('.m3u8') && Hls.isSupported()) {
       this.hls = new Hls()
       this.hls.loadSource(src)
@@ -100,35 +150,45 @@ export class VideoPlayer {
     }
   }
 
-  play() {
-    return this.video.play()
+  public play(): Promise<void> | undefined {
+    return this.video?.play()
   }
 
-  pause() {
-    this.video.pause()
+  public pause(): void {
+    this.video?.pause()
   }
 
-  seek(time) {
-    this.video.currentTime = time
+  public seek(time: number): void {
+    if (this.video) {
+      this.video.currentTime = time
+    }
   }
 
-  setVolume(volume) {
-    this.video.volume = Math.max(0, Math.min(1, volume))
+  public setVolume(volume: number): void {
+    if (this.video) {
+      this.video.volume = Math.max(0, Math.min(1, volume))
+    }
   }
 
-  mute() {
-    this.video.muted = true
+  public mute(): void {
+    if (this.video) {
+      this.video.muted = true
+    }
   }
 
-  unmute() {
-    this.video.muted = false
+  public unmute(): void {
+    if (this.video) {
+      this.video.muted = false
+    }
   }
 
-  toggleMute() {
-    this.video.muted = !this.video.muted
+  public toggleMute(): void {
+    if (this.video) {
+      this.video.muted = !this.video.muted
+    }
   }
 
-  setMuted(muted) {
+  public setMuted(muted: boolean): void {
     if (!this.video) return
     const val = !!muted
     this.video.muted = val
@@ -139,43 +199,47 @@ export class VideoPlayer {
     }
   }
 
-  enterFullscreen() {
-    if (this.canvas.requestFullscreen) {
-      this.canvas.requestFullscreen()
-    } else if (this.canvas.webkitRequestFullscreen) {
-      this.canvas.webkitRequestFullscreen()
+  public enterFullscreen(): void {
+    if (!this.canvas) return
+    
+    const canvas = this.canvas as any
+    if (canvas.requestFullscreen) {
+      canvas.requestFullscreen()
+    } else if (canvas.webkitRequestFullscreen) {
+      canvas.webkitRequestFullscreen()
     }
   }
 
-  exitFullscreen() {
-    if (document.exitFullscreen) {
-      document.exitFullscreen()
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen()
+  public exitFullscreen(): void {
+    const doc = document as any
+    if (doc.exitFullscreen) {
+      doc.exitFullscreen()
+    } else if (doc.webkitExitFullscreen) {
+      doc.webkitExitFullscreen()
     }
   }
 
-  on(event, callback) {
+  public on(event: VideoPlayerEvent, callback: EventCallback): void {
     if (!this.callbacks[event]) {
       this.callbacks[event] = []
     }
     this.callbacks[event].push(callback)
   }
 
-  emit(event, data) {
+  public emit(event: VideoPlayerEvent, data?: any): void {
     if (this.callbacks[event]) {
       this.callbacks[event].forEach(callback => callback(data))
     }
   }
 
-  destroy() {
+  public destroy(): void {
     if (this.hls) {
       this.hls.destroy()
     }
     this.callbacks = {}
   }
 
-  formatTime(seconds) {
+  public formatTime(seconds: number): string {
     const mins = Math.floor(seconds / 60)
     const secs = Math.floor(seconds % 60)
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`

@@ -1,8 +1,63 @@
-import React, { useRef, useEffect, useState, useMemo, useCallback, useImperativeHandle } from 'react'
+import React, { useRef, useEffect, useState, useMemo, useCallback, useImperativeHandle, CSSProperties } from 'react'
 import { VideoPlayer } from '@mobile-canvas-video-player/core'
-import { PlayIcon, PauseIcon, VolumeOnIcon, VolumeOffIcon, FullscreenIcon, ExitFullscreenIcon } from '../icons/index.jsx'
+import { PlayIcon, PauseIcon, VolumeOnIcon, VolumeOffIcon, FullscreenIcon, ExitFullscreenIcon } from '../icons/index'
 
-export const MobileVideoPlayer = React.forwardRef((props, ref) => {
+export interface ControlsConfig {
+  playPause?: boolean
+  mute?: boolean
+  fullscreen?: boolean
+  progressBar?: boolean
+  timeDisplay?: boolean
+}
+
+export interface MobileVideoPlayerProps {
+  src: string
+  width?: number
+  height?: number
+  loop?: boolean
+  controls?: ControlsConfig
+  onPlay?: () => void
+  onPause?: () => void
+  onTimeUpdate?: (time: number) => void
+  onEnded?: () => void
+  onError?: (error: any) => void
+  onCanPlay?: () => void
+}
+
+export interface MobileVideoPlayerRef {
+  play: () => Promise<void> | undefined
+  pause: () => void
+  seek: (time: number) => void
+  setVolume: (volume: number) => void
+  mute: () => void
+  unmute: () => void
+  setMuted: (val: boolean) => void
+  toggleMute: () => void
+  togglePlayPause: () => void
+  toggleFullscreen: () => void
+}
+
+interface PlayerState {
+  isPlaying: boolean
+  isMuted: boolean
+  isFullscreen: boolean
+  isLoading: boolean
+  currentTime: number
+  duration: number
+  buffered: number
+  showControls: boolean
+  showProgressOverlay: boolean
+  showStatus: boolean
+  statusText: string
+  isDragging: boolean
+}
+
+interface CanvasSize {
+  width: number
+  height: number
+}
+
+export const MobileVideoPlayer = React.forwardRef<MobileVideoPlayerRef, MobileVideoPlayerProps>((props, ref) => {
   const {
     src,
     width = 375,
@@ -23,13 +78,13 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
     onCanPlay
   } = props
 
-  const playerContainerRef = useRef(null)
-  const canvasRef = useRef(null)
-  const progressBarRef = useRef(null)
-  const progressHandleRef = useRef(null)
-  const playerRef = useRef(null)
-  const controlsTimerRef = useRef(null)
-  const statusTimerRef = useRef(null)
+  const playerContainerRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const progressBarRef = useRef<HTMLDivElement>(null)
+  const progressHandleRef = useRef<HTMLDivElement>(null)
+  const playerRef = useRef<VideoPlayer | null>(null)
+  const controlsTimerRef = useRef<number | null>(null)
+  const statusTimerRef = useRef<number | null>(null)
   const callbacksRef = useRef({ onPlay, onPause, onTimeUpdate, onEnded, onError, onCanPlay })
 
   // 更新回调引用
@@ -37,7 +92,7 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
     callbacksRef.current = { onPlay, onPause, onTimeUpdate, onEnded, onError, onCanPlay }
   }, [onPlay, onPause, onTimeUpdate, onEnded, onError, onCanPlay])
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<PlayerState>({
     isPlaying: false,
     isMuted: true,
     isFullscreen: false,
@@ -52,8 +107,8 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
     isDragging: false
   })
 
-  const [containerFullscreenStyle, setContainerFullscreenStyle] = useState({})
-  const [canvasSize, setCanvasSize] = useState({ width, height })
+  const [containerFullscreenStyle, setContainerFullscreenStyle] = useState<CSSProperties>({})
+  const [canvasSize, setCanvasSize] = useState<CanvasSize>({ width, height })
 
   const playedPercent = useMemo(() => 
     state.duration ? (state.currentTime / state.duration) * 100 : 0,
@@ -70,24 +125,28 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
     [controls]
   )
 
-  const updateState = useCallback((updates) => {
+  const updateState = useCallback((updates: Partial<PlayerState>) => {
     setState(prev => ({ ...prev, ...updates }))
   }, [])
 
   const showControlsTemporarily = useCallback(() => {
     updateState({ showControls: true })
-    clearTimeout(controlsTimerRef.current)
-    controlsTimerRef.current = setTimeout(() => {
+    if (controlsTimerRef.current) {
+      clearTimeout(controlsTimerRef.current)
+    }
+    controlsTimerRef.current = window.setTimeout(() => {
       if (!state.isDragging) {
         updateState({ showControls: false })
       }
     }, 3000)
   }, [state.isDragging, updateState])
 
-  const showStatusTemporarily = useCallback((text) => {
+  const showStatusTemporarily = useCallback((text: string) => {
     updateState({ statusText: text, showStatus: true })
-    clearTimeout(statusTimerRef.current)
-    statusTimerRef.current = setTimeout(() => {
+    if (statusTimerRef.current) {
+      clearTimeout(statusTimerRef.current)
+    }
+    statusTimerRef.current = window.setTimeout(() => {
       updateState({ showStatus: false })
     }, 1000)
   }, [updateState])
@@ -113,7 +172,7 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
     }
   }, [])
 
-  const setMuted = useCallback((val) => {
+  const setMuted = useCallback((val: boolean) => {
     if (playerRef.current) {
       playerRef.current.setMuted(val)
     }
@@ -148,7 +207,7 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
     showControlsTemporarily()
   }, [showControlsTemporarily])
 
-  const handleProgressClick = useCallback((event) => {
+  const handleProgressClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     if (!progressBarRef.current || !playerRef.current) return
     const rect = progressBarRef.current.getBoundingClientRect()
     const percent = (event.clientX - rect.left) / rect.width
@@ -156,14 +215,15 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
     playerRef.current.seek(newTime)
   }, [state.duration])
 
-  const startProgressDrag = useCallback((event) => {
+  const startProgressDrag = useCallback((event: React.MouseEvent<HTMLDivElement> | TouchEvent) => {
     event.preventDefault()
     updateState({ isDragging: true })
 
-    const handleDrag = (e) => {
+    const handleDrag = (e: MouseEvent | TouchEvent) => {
       if (!progressBarRef.current || !playerRef.current) return
       const rect = progressBarRef.current.getBoundingClientRect()
-      const clientX = e.clientX || (e.touches && e.touches[0].clientX)
+      const clientX = 'clientX' in e ? e.clientX : (e.touches && e.touches[0].clientX)
+      if (clientX === undefined) return
       const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
       const newTime = percent * state.duration
       playerRef.current.seek(newTime)
@@ -183,7 +243,7 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
     document.addEventListener('touchend', stopDrag)
   }, [state.duration, updateState])
 
-  const formatTime = useCallback((seconds) => {
+  const formatTime = useCallback((seconds: number): string => {
     const mins = Math.floor(seconds / 60)
     const secs = Math.floor(seconds % 60)
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
@@ -193,11 +253,11 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     play: () => playerRef.current?.play(),
     pause: () => playerRef.current?.pause(),
-    seek: (time) => playerRef.current?.seek(time),
-    setVolume: (volume) => playerRef.current?.setVolume(volume),
+    seek: (time: number) => playerRef.current?.seek(time),
+    setVolume: (volume: number) => playerRef.current?.setVolume(volume),
     mute: () => playerRef.current?.mute(),
     unmute: () => playerRef.current?.unmute(),
-    setMuted: (val) => setMuted(val),
+    setMuted: (val: boolean) => setMuted(val),
     toggleMute: () => toggleMute(),
     togglePlayPause: () => togglePlayPause(),
     toggleFullscreen: () => toggleFullscreen()
@@ -257,13 +317,14 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
       callbacksRef.current.onEnded?.()
     })
 
-    player.on('error', (error) => {
+    player.on('error', (error: any) => {
       callbacksRef.current.onError?.(error)
     })
 
     const handleFullscreenChange = () => {
+      const doc = document as any
       updateState({ 
-        isFullscreen: !!(document.fullscreenElement || document.webkitFullscreenElement) 
+        isFullscreen: !!(doc.fullscreenElement || doc.webkitFullscreenElement) 
       })
     }
 
@@ -274,21 +335,25 @@ export const MobileVideoPlayer = React.forwardRef((props, ref) => {
       player.destroy()
       document.removeEventListener('fullscreenchange', handleFullscreenChange)
       document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
-      clearTimeout(controlsTimerRef.current)
-      clearTimeout(statusTimerRef.current)
+      if (controlsTimerRef.current) {
+        clearTimeout(controlsTimerRef.current)
+      }
+      if (statusTimerRef.current) {
+        clearTimeout(statusTimerRef.current)
+      }
     }
-  }, [src, loop])
+  }, [src, loop, updateState])
 
   // 为进度条手柄添加触摸事件监听器（非被动模式）
   useEffect(() => {
     const handleElement = progressHandleRef.current
     if (handleElement) {
-      handleElement.addEventListener('touchstart', startProgressDrag, { passive: false })
+      handleElement.addEventListener('touchstart', startProgressDrag as any, { passive: false })
     }
 
     return () => {
       if (handleElement) {
-        handleElement.removeEventListener('touchstart', startProgressDrag)
+        handleElement.removeEventListener('touchstart', startProgressDrag as any)
       }
     }
   }, [startProgressDrag])

@@ -2,7 +2,7 @@
   <div class="demo-container">
     <div class="demo-header">
       <h1>Mobile Video Player</h1>
-      <p>Vue3 + Vite + Canvas</p>
+      <p>Vue3 + Vite + Canvas + TypeScript</p>
     </div>
 
     <div class="demo-player">
@@ -36,7 +36,7 @@
         <li>✅ 全屏播放</li>
         <li>✅ 进度条拖拽</li>
         <li>✅ 音量控制</li>
-        <li>✅ 响应式设计</li>
+        <li>✅ TypeScript 类型支持</li>
       </ul>
 
       <h3 style="margin-top: 20px">当前状态：</h3>
@@ -49,77 +49,49 @@
   </div>
 </template>
 
-<script>
-import { ref } from "vue";
-import { MobileVideoPlayer } from "@mobile-canvas-video-player/vue";
-import "@mobile-canvas-video-player/vue/style.css";
+<script setup lang="ts">
+import { ref } from 'vue'
+import { MobileVideoPlayer } from '@mobile-canvas-video-player/vue'
+import '@mobile-canvas-video-player/vue/style.css'
 
-export default {
-  name: "App",
-  components: {
-    MobileVideoPlayer,
-  },
-  setup() {
-    const playerRef = ref(null);
-    const videoSrc = ref(
-      "https://test-streams.mux.dev/x36xhzz/url_6/193039199_mp4_h264_aac_hq_7.m3u8"
-    );
-    const isPlaying = ref(false);
-    const currentTime = ref(0);
+const playerRef = ref<InstanceType<typeof MobileVideoPlayer> | null>(null)
+const videoSrc = ref('https://test-streams.mux.dev/x36xhzz/url_6/193039199_mp4_h264_aac_hq_7.m3u8')
+const isPlaying = ref(false)
+const currentTime = ref(0)
 
-    const formatTime = (seconds) => {
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${mins.toString().padStart(2, "0")}:${secs
-        .toString()
-        .padStart(2, "0")}`;
-    };
+const formatTime = (seconds: number): string => {
+  const mins = Math.floor(seconds / 60)
+  const secs = Math.floor(seconds % 60)
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+}
 
-    const onCanPlay = () => {
-      console.log("视频可以播放");
-      playerRef.value?.play();
-    };
+const onCanPlay = () => {
+  console.log('视频可以播放')
+  playerRef.value?.play()
+}
 
-    const onPlay = () => {
-      isPlaying.value = true;
-      // playerRef.value?.setMuted(false)
-    };
+const onPlay = () => {
+  isPlaying.value = true
+}
 
-    const onPause = () => {
-      isPlaying.value = false;
-      console.log("视频暂停");
-    };
+const onPause = () => {
+  isPlaying.value = false
+  console.log('视频暂停')
+}
 
-    const onTimeUpdate = (time) => {
-      currentTime.value = time;
-    };
+const onTimeUpdate = (time: number) => {
+  currentTime.value = time
+}
 
-    const onEnded = () => {
-      console.log("视频播放结束");
-    };
+const onEnded = () => {
+  console.log('视频播放结束')
+}
 
-    const onError = (error) => {
-      console.error("视频播放错误:", error);
-    };
+const onError = (error: any) => {
+  console.error('视频播放错误:', error)
+}
 
-    const testSeek = () => {
-      playerRef.value?.seek(10);
-    };
-
-    return {
-      playerRef,
-      videoSrc,
-      isPlaying,
-      currentTime,
-      formatTime,
-      onCanPlay,
-      onPlay,
-      onPause,
-      onTimeUpdate,
-      onEnded,
-      onError,
-      testSeek,
-    };
-  },
-};
+const testSeek = () => {
+  playerRef.value?.seek(10)
+}
 </script>

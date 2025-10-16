@@ -7,6 +7,7 @@
 项目采用 monorepo 架构，包含以下包：
 
 > 💡 **详细的安装和使用指南请查看 [INSTALLATION.md](./INSTALLATION.md)**
+> 🔷 **TypeScript 迁移文档请查看 [TYPESCRIPT_MIGRATION.md](./TYPESCRIPT_MIGRATION.md)**
 
 ### Packages
 
