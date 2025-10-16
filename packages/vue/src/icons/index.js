@@ -1,0 +1,6 @@
+export { default as PlayIcon } from './PlayIcon.vue'
+export { default as PauseIcon } from './PauseIcon.vue'
+export { default as VolumeOnIcon } from './VolumeOnIcon.vue'
+export { default as VolumeOffIcon } from './VolumeOffIcon.vue'
+export { default as FullscreenIcon } from './FullscreenIcon.vue'
+export { default as ExitFullscreenIcon } from './ExitFullscreenIcon.vue'

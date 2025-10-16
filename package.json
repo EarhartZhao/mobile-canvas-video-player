@@ -1,0 +1,27 @@
+{
+  "name": "mobile-canvas-video-player-monorepo",
+  "version": "1.0.0",
+  "description": "Mobile Canvas Video Player - Vue3 + Vite Monorepo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:vue": "pnpm --filter vue-demo dev",
+    "dev:react": "pnpm --filter react-demo dev",
+    "build": "pnpm -r build",
+    "build:core": "pnpm --filter @mobile-canvas-video-player/core build",
+    "build:vue": "pnpm --filter @mobile-canvas-video-player/vue build",
+    "build:react": "pnpm --filter @mobile-canvas-video-player/react build",
+    "build:vue-demo": "pnpm --filter vue-demo build",
+    "build:react-demo": "pnpm --filter react-demo build",
+    "preview:vue": "pnpm --filter vue-demo preview",
+    "preview:react": "pnpm --filter react-demo preview",
+    "clean": "pnpm --filter '*' exec rm -rf node_modules && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "pnpm": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
