@@ -18,6 +18,9 @@
     "dist",
     "src/style.css"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
