@@ -11,11 +11,12 @@ export default defineConfig({
       fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
-      external: ['vue', '@mobile-canvas-video-player/core'],
+      external: ['vue', '@mobile-canvas-video-player/core', 'hls.js'],
       output: {
         globals: {
           vue: 'Vue',
-          '@mobile-canvas-video-player/core': 'MobileVideoCore'
+          '@mobile-canvas-video-player/core': 'MobileVideoCore',
+          'hls.js': 'Hls'
         }
       }
     }

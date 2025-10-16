@@ -3,18 +3,17 @@
   "version": "1.0.0",
   "description": "Mobile Canvas Video Player Core Library",
   "type": "module",
-  "main": "./src/index.js",
-  "module": "./src/index.js",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
   "exports": {
     ".": {
-      "import": "./src/index.js",
-      "require": "./src/index.js",
-      "default": "./src/index.js"
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js",
+      "default": "./dist/index.es.js"
     },
     "./package.json": "./package.json"
   },
   "files": [
-    "src",
     "dist"
   ],
   "scripts": {

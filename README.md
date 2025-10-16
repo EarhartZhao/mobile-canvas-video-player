@@ -6,6 +6,8 @@
 
 项目采用 monorepo 架构，包含以下包：
 
+> 💡 **详细的安装和使用指南请查看 [INSTALLATION.md](./INSTALLATION.md)**
+
 ### Packages
 
 - **@mobile-canvas-video-player/core** - 核心播放器逻辑

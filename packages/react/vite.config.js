@@ -11,11 +11,13 @@ export default defineConfig({
       fileName: (format) => `index.${format}.js`
     },
     rollupOptions: {
-      external: ['react', 'react/jsx-runtime', '@mobile-canvas-video-player/core'],
+      external: ['react', 'react/jsx-runtime', 'react-dom', '@mobile-canvas-video-player/core', 'hls.js'],
       output: {
         globals: {
           react: 'React',
-          '@mobile-canvas-video-player/core': 'MobileVideoCore'
+          'react-dom': 'ReactDOM',
+          '@mobile-canvas-video-player/core': 'MobileVideoCore',
+          'hls.js': 'Hls'
         }
       }
     }

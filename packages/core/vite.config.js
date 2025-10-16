@@ -7,6 +7,14 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.js'),
       name: 'MobileVideoCore',
       fileName: (format) => `index.${format}.js`
+    },
+    rollupOptions: {
+      external: ['hls.js'],
+      output: {
+        globals: {
+          'hls.js': 'Hls'
+        }
+      }
     }
   }
 })
