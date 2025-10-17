@@ -179,7 +179,6 @@ npm publish --access public
 
 ## 📚 相关文档
 
-- [TYPESCRIPT_COMPLETE.md](./TYPESCRIPT_COMPLETE.md) - TypeScript 迁移完整文档
 - [INSTALLATION.md](./INSTALLATION.md) - 安装使用指南
 - [README.md](./README.md) - 项目总览
 

@@ -1,6 +1,6 @@
 # Mobile Canvas Video Player
 
-一个基于 Canvas 的移动端视频播放器组件库，支持 Vue 和 React。
+一个基于 Canvas 的移动端视频播放器组件库，支持 Vue 和 React。用于解决移动端浏览器视频播放控制条。
 
 ## 📦 包结构
 
