@@ -69,6 +69,10 @@ export class VideoPlayer {
     this.canvas = canvasElement
     this.ctx = canvasElement.getContext('2d')
     
+    // 将 video 元素添加到 DOM，但视觉上隐藏
+    this.video.style.cssText = 'position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;'
+    document.body.appendChild(this.video)
+    
     this.loadSource(src)
     this.setupVideoElement()
     this.setupEventListeners()
@@ -236,6 +240,10 @@ export class VideoPlayer {
     if (this.hls) {
       this.hls.destroy()
     }
+    // 从 DOM 中移除 video 元素
+    if (this.video && this.video.parentNode) {
+      this.video.parentNode.removeChild(this.video)
+    }
     this.callbacks = {}
   }
 
@@ -243,5 +251,15 @@ export class VideoPlayer {
     const mins = Math.floor(seconds / 60)
     const secs = Math.floor(seconds % 60)
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
+
+  public getVideoSize(): { width: number; height: number } | null {
+    if (this.video && this.video.videoWidth && this.video.videoHeight) {
+      return {
+        width: this.video.videoWidth,
+        height: this.video.videoHeight
+      }
+    }
+    return null
   }
 }

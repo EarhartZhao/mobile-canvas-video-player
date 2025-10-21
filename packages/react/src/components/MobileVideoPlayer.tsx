@@ -293,10 +293,11 @@ export const MobileVideoPlayer = React.forwardRef<MobileVideoPlayerRef, MobileVi
         duration: player.state.duration,
         isMuted: player.state.isMuted
       })
-      if (player.video && player.video.videoWidth && player.video.videoHeight) {
+      const videoSize = player.getVideoSize()
+      if (videoSize) {
         setCanvasSize({
-          width: player.video.videoWidth,
-          height: player.video.videoHeight
+          width: videoSize.width,
+          height: videoSize.height
         })
       }
     })
@@ -416,9 +417,9 @@ export const MobileVideoPlayer = React.forwardRef<MobileVideoPlayerRef, MobileVi
 
           <div className="controls">
             {controls.playPause && (
-              <button onClick={togglePlayPause} className="control-btn">
+              <div onClick={togglePlayPause} className="control-btn">
                 {state.isPlaying ? <PauseIcon /> : <PlayIcon />}
-              </button>
+              </div>
             )}
 
             {controls.timeDisplay && (
@@ -428,15 +429,15 @@ export const MobileVideoPlayer = React.forwardRef<MobileVideoPlayerRef, MobileVi
             )}
 
             {controls.mute && (
-              <button onClick={toggleMute} className="control-btn">
+              <div onClick={toggleMute} className="control-btn">
                 {state.isMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
-              </button>
+              </div>
             )}
 
             {controls.fullscreen && (
-              <button onClick={toggleFullscreen} className="control-btn fullscreen-btn">
+              <div onClick={toggleFullscreen} className="control-btn fullscreen-btn">
                 {state.isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
-              </button>
+              </div>
             )}
           </div>
         </div>

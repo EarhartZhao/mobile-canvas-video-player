@@ -15,10 +15,11 @@
     "build:react-demo": "pnpm --filter react-demo build",
     "preview:vue": "pnpm --filter vue-demo preview",
     "preview:react": "pnpm --filter react-demo preview",
-    "clean": "pnpm --filter '*' exec rm -rf node_modules && rm -rf node_modules"
+    "clean": "rimraf node_modules packages/core/node_modules packages/vue/node_modules packages/react/node_modules apps/vue-demo/node_modules apps/react-demo/node_modules"
   },
   "devDependencies": {
-    "pnpm": "^8.0.0"
+    "pnpm": "^8.0.0",
+    "rimraf": "^6.0.1"
   },
   "engines": {
     "node": ">=16.0.0",

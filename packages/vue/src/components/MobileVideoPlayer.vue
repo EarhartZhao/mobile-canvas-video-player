@@ -36,22 +36,22 @@
 
       <!-- 控制按钮 -->
       <div class="controls">
-        <button v-if="controls.playPause" @click="togglePlayPause" class="control-btn">
+        <div v-if="controls.playPause" @click="togglePlayPause" class="control-btn">
           <PlayIcon v-if="!isPlaying" />
           <PauseIcon v-else />
-        </button>
+        </div>
         
         <span v-if="controls.timeDisplay" class="time">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
         
-        <button v-if="controls.mute" @click="toggleMute" class="control-btn">
+        <div v-if="controls.mute" @click="toggleMute" class="control-btn">
           <VolumeOnIcon v-if="!isMuted" />
           <VolumeOffIcon v-else />
-        </button>
+        </div>
         
-        <button v-if="controls.fullscreen" @click="toggleFullscreen" class="control-btn fullscreen-btn">
+        <div v-if="controls.fullscreen" @click="toggleFullscreen" class="control-btn fullscreen-btn">
           <FullscreenIcon v-if="!isFullscreen" />
           <ExitFullscreenIcon v-else />
-        </button>
+        </div>
       </div>
     </div>
   </div>
@@ -290,9 +290,10 @@ export default {
         state.duration = player.state.duration
         console.log('loadedmetadata', player.state)
         state.isMuted = player.state.isMuted
-        if (player.video && player.video.videoWidth && player.video.videoHeight) {
-          canvasWidth.value = player.video.videoWidth
-          canvasHeight.value = player.video.videoHeight
+        const videoSize = player.getVideoSize()
+        if (videoSize) {
+          canvasWidth.value = videoSize.width
+          canvasHeight.value = videoSize.height
         }
       })
 

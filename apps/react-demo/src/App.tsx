@@ -75,10 +75,13 @@ function App() {
           ref={playerRef}
           src={videoSrc}
           width={375}
-          height={375}
+          height={275}
           controls={{
+            playPause: true,
             mute: true,
             fullscreen: true,
+            progressBar: true,
+            timeDisplay: true,
           }}
           onPlay={onPlay}
           onPause={onPause}
