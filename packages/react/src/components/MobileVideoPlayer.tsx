@@ -361,7 +361,7 @@ export const MobileVideoPlayer = React.forwardRef<MobileVideoPlayerRef, MobileVi
 
   return (
     <div 
-      className="video-player" 
+      className="mcvp-video-player" 
       ref={playerContainerRef} 
       style={containerFullscreenStyle}
     >
@@ -373,41 +373,41 @@ export const MobileVideoPlayer = React.forwardRef<MobileVideoPlayerRef, MobileVi
       />
 
       {state.showProgressOverlay && (
-        <div className="progress-overlay">
-          <div className="time-display">
+        <div className="mcvp-progress-overlay">
+          <div className="mcvp-time-display">
             {formatTime(state.currentTime)} / {formatTime(state.duration)}
           </div>
         </div>
       )}
 
       {state.showStatus && (
-        <div className="status">{state.statusText}</div>
+        <div className="mcvp-status">{state.statusText}</div>
       )}
 
       {state.isLoading && (
-        <div className="loading">
-          <div className="loading-spinner"></div>
+        <div className="mcvp-loading">
+          <div className="mcvp-loading-spinner"></div>
         </div>
       )}
 
       {state.showControls && hasAnyControl && (
-        <div className="controls-container" onClick={(e) => e.stopPropagation()}>
+        <div className="mcvp-controls-container" onClick={(e) => e.stopPropagation()}>
           {controls.progressBar && (
             <div 
-              className="progress-bar" 
+              className="mcvp-progress-bar" 
               onClick={handleProgressClick} 
               ref={progressBarRef}
             >
               <div 
-                className="progress-buffered" 
+                className="mcvp-progress-buffered" 
                 style={{ width: `${bufferedPercent}%` }}
               ></div>
               <div 
-                className="progress-played" 
+                className="mcvp-progress-played" 
                 style={{ width: `${playedPercent}%` }}
               ></div>
               <div
-                className="progress-handle"
+                className="mcvp-progress-handle"
                 style={{ left: `${playedPercent}%` }}
                 ref={progressHandleRef}
                 onMouseDown={startProgressDrag}
@@ -415,27 +415,27 @@ export const MobileVideoPlayer = React.forwardRef<MobileVideoPlayerRef, MobileVi
             </div>
           )}
 
-          <div className="controls">
+          <div className="mcvp-controls">
             {controls.playPause && (
-              <div onClick={togglePlayPause} className="control-btn">
+              <div onClick={togglePlayPause} className="mcvp-control-btn">
                 {state.isPlaying ? <PauseIcon /> : <PlayIcon />}
               </div>
             )}
 
             {controls.timeDisplay && (
-              <span className="time">
+              <span className="mcvp-time">
                 {formatTime(state.currentTime)} / {formatTime(state.duration)}
               </span>
             )}
 
             {controls.mute && (
-              <div onClick={toggleMute} className="control-btn">
+              <div onClick={toggleMute} className="mcvp-control-btn">
                 {state.isMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
               </div>
             )}
 
             {controls.fullscreen && (
-              <div onClick={toggleFullscreen} className="control-btn fullscreen-btn">
+              <div onClick={toggleFullscreen} className="mcvp-control-btn mcvp-fullscreen-btn">
                 {state.isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
               </div>
             )}

@@ -205,6 +205,17 @@ playerRef.current.unmute()
 - ✅ 自定义控制条
 - ✅ Vue 3 & React 19 支持
 - ✅ 支持手动控制播放（通过 canplay 事件）
+- ✅ **样式隔离** - 使用命名空间前缀，避免与 Tailwind CSS 等框架冲突
+
+## 🎨 样式隔离
+
+组件使用 `mcvp-` 前缀作为命名空间，完全避免样式冲突：
+
+- ✅ 不会被 Tailwind CSS 覆盖
+- ✅ 不会与项目中的样式冲突
+- ✅ 支持自定义样式覆盖
+
+详细说明请查看 [CSS_ISOLATION.md](./CSS_ISOLATION.md)
 
 ## 📝 开发
 

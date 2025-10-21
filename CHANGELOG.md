@@ -1,4 +1,46 @@
-# 版本更新日志 v1.1.0
+# 版本更新日志
+
+## v1.1.3 (2025-10-21)
+
+### 🔧 Bug 修复
+
+- **修复 loadedmetadata 事件不触发问题**
+  - video 元素现在会挂载到 DOM 中（使用透明样式隐藏）
+  - 确保在移动端浏览器中正常触发元数据加载事件
+  - 在组件销毁时正确清理 DOM 元素
+
+### 🎨 样式隔离方案
+
+- **添加命名空间前缀** - 所有 CSS 类名添加 `mcvp-` 前缀
+  - 完全避免与 Tailwind CSS 等框架的样式冲突
+  - 支持在任何项目中使用，无需担心类名污染
+  - 保持使用方式不变，零侵入性
+
+#### CSS 类名更新
+
+```
+.video-player         → .mcvp-video-player
+.controls-container   → .mcvp-controls-container
+.progress-bar         → .mcvp-progress-bar
+.control-btn          → .mcvp-control-btn
+.time                 → .mcvp-time
+... 所有类名均添加前缀
+```
+
+### 📚 文档更新
+
+- 新增 [CSS_ISOLATION.md](./CSS_ISOLATION.md) - CSS 样式隔离方案说明
+- 更新 README.md - 添加样式隔离功能说明
+
+### 🔄 兼容性
+
+- ✅ **无破坏性变更** - 使用方式完全不变
+- ✅ 所有现有代码无需修改
+- ✅ 向后兼容
+
+---
+
+## v1.1.0 (2025-10-16)
 
 ## 📦 包版本更新
 

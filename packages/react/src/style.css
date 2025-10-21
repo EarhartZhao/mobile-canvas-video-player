@@ -1,4 +1,4 @@
-.video-player {
+.mcvp-video-player {
   position: relative;
   width: 100%;
   height: auto;
@@ -12,14 +12,14 @@
   align-items: center;
 }
 
-.video-player canvas {
+.mcvp-video-player canvas {
   width: 100%;
   height: auto;
   display: block;
   object-fit: cover;
 }
 
-.progress-overlay {
+.mcvp-progress-overlay {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -32,7 +32,7 @@
   z-index: 10;
 }
 
-.status {
+.mcvp-status {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -45,7 +45,7 @@
   z-index: 10;
 }
 
-.loading {
+.mcvp-loading {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -53,21 +53,21 @@
   z-index: 10;
 }
 
-.loading-spinner {
+.mcvp-loading-spinner {
   width: 40px;
   height: 40px;
   border: 4px solid rgba(255, 255, 255, 0.3);
   border-top: 4px solid white;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: mcvp-spin 1s linear infinite;
 }
 
-@keyframes spin {
+@keyframes mcvp-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-.controls-container {
+.mcvp-controls-container {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -77,7 +77,7 @@
   z-index: 5;
 }
 
-.progress-bar {
+.mcvp-progress-bar {
   position: relative;
   height: 4px;
   background: rgba(255, 255, 255, 0.3);
@@ -86,7 +86,7 @@
   cursor: pointer;
 }
 
-.progress-buffered {
+.mcvp-progress-buffered {
   position: absolute;
   top: 0;
   left: 0;
@@ -96,7 +96,7 @@
   transition: width 0.1s ease;
 }
 
-.progress-played {
+.mcvp-progress-played {
   position: absolute;
   top: 0;
   left: 0;
@@ -106,7 +106,7 @@
   transition: width 0.1s ease;
 }
 
-.progress-handle {
+.mcvp-progress-handle {
   position: absolute;
   top: 50%;
   width: 16px;
@@ -119,13 +119,13 @@
   transition: left 0.1s ease;
 }
 
-.controls {
+.mcvp-controls {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-.control-btn {
+.mcvp-control-btn {
   background: none;
   border: none;
   color: white;
@@ -138,42 +138,42 @@
   transition: background-color 0.2s ease;
 }
 
-.control-btn:hover {
+.mcvp-control-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.time {
+.mcvp-time {
   color: white;
   font-size: 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.fullscreen-btn {
+.mcvp-fullscreen-btn {
   margin-left: auto;
 }
 
 /* 移动端适配 */
 @media (max-width: 768px) {
-  .controls-container {
+  .mcvp-controls-container {
     padding: 15px 10px 10px;
   }
   
-  .controls {
+  .mcvp-controls {
     gap: 10px;
   }
   
-  .control-btn {
+  .mcvp-control-btn {
     padding: 6px;
   }
   
-  .time {
+  .mcvp-time {
     font-size: 12px;
   }
 }
 
 /* iPhone X 及以上设备的安全区域适配 */
 @supports (padding: max(0px)) {
-  .controls-container {
+  .mcvp-controls-container {
     padding-bottom: max(15px, env(safe-area-inset-bottom));
   }
 }

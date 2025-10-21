@@ -1,5 +1,5 @@
 <template>
-  <div class="video-player" ref="playerContainer" :style="containerFullscreenStyle">
+  <div class="mcvp-video-player" ref="playerContainer" :style="containerFullscreenStyle">
     <canvas 
       ref="canvasElement"
       :width="canvasWidth"
@@ -8,26 +8,26 @@
     />
 
     <!-- 进度覆盖层 -->
-    <div class="progress-overlay" v-show="showProgressOverlay">
-      <div class="time-display">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</div>
+    <div class="mcvp-progress-overlay" v-show="showProgressOverlay">
+      <div class="mcvp-time-display">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</div>
     </div>
 
     <!-- 状态显示 -->
-    <div class="status" v-show="showStatus">{{ statusText }}</div>
+    <div class="mcvp-status" v-show="showStatus">{{ statusText }}</div>
 
     <!-- 加载指示器 -->
-    <div class="loading" v-show="isLoading">
-      <div class="loading-spinner"></div>
+    <div class="mcvp-loading" v-show="isLoading">
+      <div class="mcvp-loading-spinner"></div>
     </div>
 
     <!-- 控制栏 -->
-    <div class="controls-container" v-show="showControls && hasAnyControl" @click.stop>
+    <div class="mcvp-controls-container" v-show="showControls && hasAnyControl" @click.stop>
       <!-- 进度条 -->
-      <div v-if="controls.progressBar" class="progress-bar" @click="handleProgressClick" ref="progressBar">
-        <div class="progress-buffered" :style="{ width: bufferedPercent + '%' }"></div>
-        <div class="progress-played" :style="{ width: playedPercent + '%' }"></div>
+      <div v-if="controls.progressBar" class="mcvp-progress-bar" @click="handleProgressClick" ref="progressBar">
+        <div class="mcvp-progress-buffered" :style="{ width: bufferedPercent + '%' }"></div>
+        <div class="mcvp-progress-played" :style="{ width: playedPercent + '%' }"></div>
         <div 
-          class="progress-handle" 
+          class="mcvp-progress-handle" 
           :style="{ left: playedPercent + '%' }"
           @mousedown="startProgressDrag"
           ref="progressHandle"
@@ -35,20 +35,20 @@
       </div>
 
       <!-- 控制按钮 -->
-      <div class="controls">
-        <div v-if="controls.playPause" @click="togglePlayPause" class="control-btn">
+      <div class="mcvp-controls">
+        <div v-if="controls.playPause" @click="togglePlayPause" class="mcvp-control-btn">
           <PlayIcon v-if="!isPlaying" />
           <PauseIcon v-else />
         </div>
         
-        <span v-if="controls.timeDisplay" class="time">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
+        <span v-if="controls.timeDisplay" class="mcvp-time">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
         
-        <div v-if="controls.mute" @click="toggleMute" class="control-btn">
+        <div v-if="controls.mute" @click="toggleMute" class="mcvp-control-btn">
           <VolumeOnIcon v-if="!isMuted" />
           <VolumeOffIcon v-else />
         </div>
         
-        <div v-if="controls.fullscreen" @click="toggleFullscreen" class="control-btn fullscreen-btn">
+        <div v-if="controls.fullscreen" @click="toggleFullscreen" class="mcvp-control-btn mcvp-fullscreen-btn">
           <FullscreenIcon v-if="!isFullscreen" />
           <ExitFullscreenIcon v-else />
         </div>
