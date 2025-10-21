@@ -1,5 +1,43 @@
 # 版本更新日志
 
+## v1.1.4 (2025-10-21)
+
+### 📦 包信息完善
+
+- **添加 repository 字段**
+  - 所有包的 package.json 添加了 repository 字段
+  - 指向 GitHub 仓库，方便用户查看源码
+  - npm 包页面将显示仓库链接
+  - 支持 monorepo 目录结构（通过 directory 字段）
+
+### 🔄 版本更新
+
+| 包名 | 版本 |
+|------|------|
+| @mobile-canvas-video-player/core | 1.1.4 |
+| @mobile-canvas-video-player/react | 1.1.4 |
+| @mobile-canvas-video-player/vue | 1.1.4 |
+
+### 📝 配置优化
+
+```json
+{
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/mobile-canvas-video-player.git",
+    "directory": "packages/core"  // 各包对应目录
+  }
+}
+```
+
+### 🔗 相关链接
+
+- npm 包页面将显示 "Repository" 链接
+- 用户可直接跳转到 GitHub 查看源码
+- 便于提交 issue 和 PR
+
+---
+
 ## v1.1.3 (2025-10-21)
 
 ### 🔧 Bug 修复

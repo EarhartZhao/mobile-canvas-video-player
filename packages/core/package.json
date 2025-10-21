@@ -1,6 +1,6 @@
 {
   "name": "@mobile-canvas-video-player/core",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Mobile Canvas Video Player Core Library",
   "type": "module",
   "main": "./dist/index.umd.js",
@@ -19,6 +19,11 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EarhartZhao/mobile-canvas-video-player.git",
+    "directory": "packages/core"
+  },
   "publishConfig": {
     "access": "public"
   },

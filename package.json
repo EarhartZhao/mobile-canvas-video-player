@@ -4,6 +4,10 @@
   "description": "Mobile Canvas Video Player - Vue3 + Vite Monorepo",
   "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EarhartZhao/mobile-canvas-video-player.git"
+  },
   "scripts": {
     "dev:vue": "pnpm --filter vue-demo dev",
     "dev:react": "pnpm --filter react-demo dev",
